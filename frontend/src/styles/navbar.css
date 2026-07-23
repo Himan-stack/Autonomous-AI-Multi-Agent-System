@@ -1,0 +1,150 @@
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:18px 60px;
+
+    background:rgba(15,23,42,.75);
+    backdrop-filter:blur(14px);
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    box-shadow:0 8px 30px rgba(0,0,0,.25);
+}
+
+.navbar-logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo-icon{
+    font-size:34px;
+    color:#3B82F6;
+}
+
+.navbar-logo h2{
+    color:white;
+    margin:0;
+    font-size:24px;
+}
+
+.navbar-logo span{
+    color:#94A3B8;
+    font-size:13px;
+}
+
+.navbar-links{
+    display:flex;
+    gap:35px;
+}
+
+.navbar-links a{
+    color:#CBD5E1;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.navbar-links a:hover{
+    color:#3B82F6;
+}
+
+.navbar-actions{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.github-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:10px 18px;
+
+    border:1px solid #334155;
+
+    border-radius:10px;
+
+    color:white;
+
+    text-decoration:none;
+
+    transition:.3s;
+}
+
+.github-btn:hover{
+    background:#334155;
+}
+
+.login-btn{
+
+    padding:10px 22px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:#3B82F6;
+
+    color:white;
+
+    transition:.3s;
+}
+
+.login-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:#2563EB;
+}
+
+.menu-btn{
+
+    display:none;
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+
+.navbar-links{
+
+display:none;
+
+}
+
+.github-btn{
+
+display:none;
+
+}
+
+.menu-btn{
+
+display:block;
+
+}
+
+.navbar{
+
+padding:18px 25px;
+
+}
+
+}

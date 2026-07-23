@@ -1,148 +1,199 @@
 # 🤖 Autonomous AI Agent
 
-![Python](https://img.shields.io/badge/Python-3.13-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-green)
-![Gemini](https://img.shields.io/badge/LLM-Gemini-orange)
-![Groq](https://img.shields.io/badge/Fallback-Groq-red)
-![Pydantic](https://img.shields.io/badge/Pydantic-v2-success)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
+<p align="center">
 
-An autonomous multi-step AI agent built with **Python** and **FastAPI** that understands a user's natural language request, creates its own execution plan, generates a structured business document, reviews its own output, and exports the final result as **DOCX**, **PDF**, **TXT**, and **Markdown**.
+![Python](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST_API-green?style=for-the-badge&logo=fastapi)
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react)
+![Vite](https://img.shields.io/badge/Vite-Build-646CFF?style=for-the-badge&logo=vite)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-UI-38BDF8?style=for-the-badge&logo=tailwindcss)
+![Gemini](https://img.shields.io/badge/LLM-Gemini-orange?style=for-the-badge)
+![Groq](https://img.shields.io/badge/Fallback-Groq-red?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=for-the-badge)
+
+</p>
 
 ---
 
-# 🚀 Project Overview
+# 🚀 Overview
 
-This project demonstrates an autonomous AI workflow where multiple specialized agents collaborate to solve a user's request.
+**Autonomous AI Agent** is a production-style **multi-agent AI document generation platform** built using **FastAPI**, **React**, **Gemini**, and **Groq**.
 
-Instead of directly generating a document, the system performs several reasoning stages:
+Instead of directly generating text, the system follows an autonomous reasoning workflow:
 
-1. Analyze the request
-2. Build an execution plan
-3. Generate the document
-4. Review its own work
-5. Improve the document if necessary
-6. Export the final document into multiple formats
+- 🧠 Understands the user's request
+- 📋 Creates its own execution plan
+- ✍ Generates a professional business document
+- 🔍 Reviews and improves its own work
+- 📄 Exports the final result into multiple document formats
 
-The project exposes everything through a **FastAPI REST API**.
+The application also provides a modern React dashboard to monitor the complete execution process.
 
 ---
 
 # ✨ Features
 
-- ✅ Autonomous AI Workflow
-- ✅ Multi-Agent Architecture
-- ✅ Natural Language Understanding
-- ✅ Automatic Task Planning
-- ✅ Business Document Generation
-- ✅ Reflection / Self Review
-- ✅ Gemini + Groq Fallback
-- ✅ Retry Logic with Exponential Backoff
-- ✅ FastAPI REST API
-- ✅ Swagger Documentation
+- 🤖 Multi-Agent AI Architecture
+- 🧠 Autonomous Planning
+- 📑 Business Document Generation
+- 🔍 Reflection / Self Review
+- ⚡ Gemini + Groq Automatic Fallback
+- 🔁 Retry Logic with Exponential Backoff
+- 📄 DOCX Generation
+- 📕 PDF Generation
+- 📝 Markdown Generation
+- 📃 TXT Generation
+- ⚙ FastAPI REST API
+- 📚 Swagger Documentation
 - ✅ Request Validation using Pydantic
-- ✅ DOCX Export
-- ✅ PDF Export
-- ✅ TXT Export
-- ✅ Markdown Export
-- ✅ Structured JSON Models
+- 🎨 Modern React Dashboard
+- 📊 Execution Timeline
+- 📈 Performance Metrics
+- 🌙 Responsive Dark UI
 
 ---
 
-# 🏗 Architecture
+# 🏗 System Architecture
 
-```
-                User Request
-                      │
-                      ▼
-               FastAPI Endpoint
-                      │
-                      ▼
-              ┌────────────────┐
-              │   Orchestrator │
-              └────────────────┘
-                      │
-      ┌───────────────┼───────────────┐
-      ▼               ▼               ▼
-  Analyzer        Planner         Executor
-      │               │               │
-      └───────────────┼───────────────┘
-                      ▼
-               Reflection Agent
-                      │
-                      ▼
-              Document Generator
-                      │
-        ┌─────────────┼─────────────┐
-        ▼             ▼             ▼
-      DOCX           PDF           TXT
-                      │
-                      ▼
-                 API Response
+```text
+                    User Request
+                          │
+                          ▼
+                 FastAPI REST Endpoint
+                          │
+                          ▼
+                  Autonomous Orchestrator
+                          │
+     ┌────────────────────┼────────────────────┐
+     ▼                    ▼                    ▼
+ Analyzer             Planner             Executor
+     │                    │                    │
+     └────────────────────┼────────────────────┘
+                          ▼
+                  Reflection Agent
+                          │
+                          ▼
+                 Document Generator
+                          │
+          ┌───────────────┼───────────────┐
+          ▼               ▼               ▼
+        DOCX             PDF            TXT
+                          │
+                          ▼
+                  React Dashboard
 ```
 
 ---
 
 # 🔄 Agent Workflow
 
-### 1️⃣ Analyzer
+## 1️⃣ Analyzer
 
-The Analyzer receives the natural language request and extracts structured information.
+The Analyzer understands the user's natural language request.
 
-Output:
+It extracts:
 
-- Document Type
 - Goal
-- Provided Information
+- Document Type
+- Business Context
 - Missing Information
-- Business Assumptions
+- Assumptions
 
 ---
 
-### 2️⃣ Planner
+## 2️⃣ Planner
 
-The Planner converts the analysis into an autonomous execution plan.
+The Planner creates an execution strategy before writing any content.
 
 Example:
 
 ```
-1. Define project scope
-2. Identify stakeholders
-3. Estimate budget
-4. Perform risk analysis
-5. Create timeline
-...
+1. Analyze requirements
+2. Define objectives
+3. Estimate resources
+4. Perform risk assessment
+5. Generate recommendations
 ```
 
 ---
 
-### 3️⃣ Executor
+## 3️⃣ Executor
 
-The Executor follows the generated plan and creates the complete business document using the LLM.
+The Executor follows the generated execution plan and produces the complete document.
 
 ---
 
-### 4️⃣ Reflection Agent
+## 4️⃣ Reflection Agent
 
-The Reflection Agent reviews the generated document and checks:
+The Reflection Agent reviews the generated content and checks for:
 
 - Completeness
 - Grammar
-- Professional tone
+- Professional Tone
+- Missing Sections
 - Consistency
-- Missing sections
 - Readability
 
-If improvements are required, it rewrites the document before final delivery.
+If improvements are required, the document is rewritten before final delivery.
+
+---
+
+# 🖥 Dashboard
+
+The frontend provides an interactive dashboard that includes:
+
+- Prompt Workspace
+- AI Execution Timeline
+- Live Status Updates
+- Generated Document Preview
+- Metrics Cards
+- Logs Viewer
+- Download Panel
+- Settings Modal
+
+---
+
+# 📸 Screenshots
+
+## Dashboard
+
+> Add screenshot here
+
+```
+![Dashboard](screenshots/dashboard.png)
+```
+
+---
+
+## Live Pipeline
+
+> Add screenshot here
+
+```
+![Pipeline](screenshots/pipeline.png)
+```
+
+---
+
+## Reflection
+
+> Add screenshot here
+
+```
+![Reflection](screenshots/reflection.png)
+```
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 autonomous-ai-agent/
+
+├── backend/
 │
-├── app/
+│   ├── app/
+│   │
 │   ├── agents/
 │   ├── models/
 │   ├── prompts/
@@ -150,41 +201,76 @@ autonomous-ai-agent/
 │   ├── tools/
 │   ├── utils/
 │   ├── generated_docs/
-│   ├── api.py
+│   │
+│   ├── main.py
 │   ├── config.py
-│   └── main.py
+│   └── api.py
+│
+├── frontend/
+│
+│   ├── src/
+│   │
+│   ├── components/
+│   ├── context/
+│   ├── pages/
+│   ├── services/
+│   ├── styles/
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
 │
 ├── docs/
-│   └── generated/
-│
 ├── tests/
-│
-├── requirements.txt
 ├── README.md
+├── requirements.txt
 └── .env
 ```
 
 ---
 
-# ⚙ Technologies Used
+# 🛠 Technology Stack
+
+## Backend
 
 - Python 3.13
 - FastAPI
-- Gemini API
-- Groq API
-- Pydantic
-- ReportLab
-- python-docx
+- Pydantic v2
 - Uvicorn
+
+## Frontend
+
+- React
+- Vite
+- Tailwind CSS
+- Framer Motion
+- Lucide Icons
+- Sonner
+
+## AI Models
+
+- Gemini 2.5 Flash
+- Groq (Llama 3.3 70B)
+
+## Document Generation
+
+- python-docx
+- ReportLab
 
 ---
 
-# 📦 Installation
+# ⚙ Installation
 
 Clone the repository
 
 ```bash
-git clone <repository_url>
+git clone https://github.com/yourusername/autonomous-ai-agent.git
+```
+
+Move inside the project
+
+```bash
+cd autonomous-ai-agent
 ```
 
 Create virtual environment
@@ -201,6 +287,12 @@ Windows
 venv\Scripts\activate
 ```
 
+Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
 Install dependencies
 
 ```bash
@@ -213,7 +305,7 @@ pip install -r requirements.txt
 
 Create a `.env` file.
 
-```
+```env
 GEMINI_API_KEY=your_key
 
 GROQ_API_KEY=your_key
@@ -225,49 +317,84 @@ GROQ_MODEL=llama-3.3-70b-versatile
 
 ---
 
-# ▶ Running the API
+# ▶ Running the Backend
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Swagger UI
+Runs on
 
 ```
-http://127.0.0.1:8000/docs
+http://localhost:8000
 ```
 
 ---
 
-# 📌 API Endpoint
+# ▶ Running the Frontend
+
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+Runs on
 
 ```
-POST /agent
+http://localhost:5173
+```
+
+---
+
+# 📚 API Documentation
+
+Swagger UI
+
+```
+http://localhost:8000/docs
+```
+
+ReDoc
+
+```
+http://localhost:8000/redoc
+```
+
+---
+
+# 📌 REST API
+
+## POST
+
+```
+/agent
 ```
 
 Example Request
 
 ```json
 {
-    "request":"Create a business proposal for launching an AI healthcare startup."
+  "request": "Create a business proposal for launching an AI healthcare startup."
 }
 ```
 
----
-
-# ✅ Example Response
+Example Response
 
 ```json
 {
-    "status":"Success",
-    "document_type":"Business Proposal",
-    "execution_time":"34.21 sec",
-    "generated_files":{
-        "docx":"docs/generated/....docx",
-        "pdf":"docs/generated/....pdf",
-        "txt":"docs/generated/....txt",
-        "md":"docs/generated/....md"
-    }
+  "status": "Success",
+  "document_type": "Business Proposal",
+  "execution_time": "18.42 sec",
+  "reflection": true,
+  "generated_files": {
+    "docx": "generated_docs/report.docx",
+    "pdf": "generated_docs/report.pdf",
+    "txt": "generated_docs/report.txt",
+    "md": "generated_docs/report.md"
+  }
 }
 ```
 
@@ -275,100 +402,56 @@ Example Request
 
 # 📄 Generated Documents
 
-The system automatically exports
+Each execution automatically exports
 
 - DOCX
 - PDF
 - TXT
 - Markdown
 
-Each execution generates timestamped files.
-
 Example
 
 ```
-docs/generated/
+generated_docs/
 
-execution_report_20260712_031851.docx
+business_report_20260723_141520.docx
 
-execution_report_20260712_031851.pdf
+business_report_20260723_141520.pdf
 
-execution_report_20260712_031851.txt
+business_report_20260723_141520.txt
 
-execution_report_20260712_031851.md
+business_report_20260723_141520.md
 ```
 
 ---
 
-# 🧠 Engineering Improvements
+# ⚡ Engineering Highlights
 
-This project implements multiple engineering improvements.
+✅ Autonomous Multi-Agent Workflow
 
-## ✅ Multi-Step Planning
+✅ Self Reflection Agent
 
-The AI first creates its own execution plan before generating the document.
+✅ Retry Logic
 
----
+✅ Automatic Gemini → Groq Fallback
 
-## ✅ Reflection / Self Review
+✅ Structured JSON Validation
 
-The generated document is reviewed by another AI step.
+✅ Business Document Generation
 
-If improvements are needed, the document is rewritten.
+✅ Responsive React Dashboard
 
----
+✅ REST API
 
-## ✅ Retry Logic
+✅ Modular Architecture
 
-Gemini requests automatically retry up to three times using exponential backoff.
-
-```
-Attempt 1
-
-↓
-
-Attempt 2
-
-↓
-
-Attempt 3
-```
+✅ Clean Separation of Concerns
 
 ---
 
-## ✅ Fallback Logic
+# 🧪 Example Prompts
 
-If Gemini is unavailable or exceeds quota,
-
-the router automatically switches to Groq.
-
-```
-Gemini
-
-↓
-
-Failure
-
-↓
-
-Groq
-
-↓
-
-Success
-```
-
----
-
-## ✅ Request Validation
-
-Pydantic validates incoming requests before execution.
-
----
-
-# 🧪 Test Cases
-
-## Standard Request
+### Business Proposal
 
 ```
 Create a business proposal for launching an AI healthcare startup.
@@ -376,7 +459,7 @@ Create a business proposal for launching an AI healthcare startup.
 
 ---
 
-## Complex Request
+### AWS Migration Plan
 
 ```
 Prepare a complete project plan for migrating a medium-sized e-commerce company to AWS.
@@ -391,40 +474,57 @@ Some business requirements are missing.
 
 Make reasonable assumptions wherever necessary.
 
-Include a risk assessment, migration timeline, estimated costs, responsibilities, and recommendations.
+Include:
+
+- Risk Assessment
+- Timeline
+- Cost Estimation
+- Responsibilities
+- Recommendations
 ```
 
 ---
 
-# 📈 Future Improvements
+# 📈 Roadmap
 
-- Conversation Memory
-- RAG Integration
-- Tool Calling
-- Multi-Agent Parallel Execution
-- Vector Database
-- Authentication
-- Docker Deployment
-- CI/CD Pipeline
-- Streaming Responses
-- Multi-language Support
+- [x] Multi-Agent Architecture
+- [x] Gemini Integration
+- [x] Groq Fallback
+- [x] Reflection Agent
+- [x] Retry Logic
+- [x] DOCX Export
+- [x] PDF Export
+- [x] Markdown Export
+- [x] TXT Export
+- [x] React Dashboard
+- [ ] Streaming Responses
+- [ ] Conversation Memory
+- [ ] RAG Integration
+- [ ] Vector Database
+- [ ] Tool Calling
+- [ ] Docker Support
+- [ ] CI/CD Pipeline
+- [ ] Kubernetes Deployment
+- [ ] Authentication
 
 ---
 
-# 🎯 Assignment Requirements Coverage
+# 📊 Assignment Coverage
 
 | Requirement | Status |
 |------------|--------|
-| Autonomous Agent | ✅ |
-| FastAPI | ✅ |
-| Multi-step Planning | ✅ |
-| Reflection | ✅ |
+| Autonomous AI Agent | ✅ |
+| FastAPI REST API | ✅ |
+| Multi-Agent Workflow | ✅ |
+| Reflection Agent | ✅ |
 | Retry Logic | ✅ |
-| Fallback Logic | ✅ |
-| Word Document Generation | ✅ |
-| REST API | ✅ |
-| Request Validation | ✅ |
-| Two Test Cases | ✅ |
+| Gemini + Groq Fallback | ✅ |
+| DOCX Generation | ✅ |
+| PDF Generation | ✅ |
+| Markdown Generation | ✅ |
+| TXT Generation | ✅ |
+| Pydantic Validation | ✅ |
+| React Frontend | ✅ |
 
 ---
 
@@ -434,8 +534,21 @@ Include a risk assessment, migration timeline, estimated costs, responsibilities
 
 B.Tech Artificial Intelligence & Machine Learning
 
-Python • Machine Learning • FastAPI • Autonomous AI Agents
+**Tech Stack**
+
+- Python
+- FastAPI
+- React
+- Machine Learning
+- AI Agents
+- AWS
 
 ---
 
-## ⭐ If you found this project useful, consider giving it a star.
+# 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star!

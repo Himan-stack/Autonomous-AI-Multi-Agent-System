@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.agent import router as agent_router
+from app.routes.download import router as download_router
 
 app = FastAPI(
     title="Autonomous AI Agent",
@@ -20,6 +21,7 @@ app.add_middleware(
 )
 
 app.include_router(agent_router)
+app.include_router(download_router)
 
 @app.get("/")
 def home():

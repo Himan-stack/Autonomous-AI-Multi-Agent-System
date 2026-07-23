@@ -30,4 +30,21 @@ Thumbs.db
 # React (future)
 frontend/node_modules/
 frontend/dist/
-frontend
+# Python cache
+.pytest_cache/
+.mypy_cache/
+
+# Environment
+.env.*
+!.env.example
+
+# Coverage
+.coverage
+htmlcov/
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+Desktop.ini

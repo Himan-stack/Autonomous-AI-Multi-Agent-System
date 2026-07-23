@@ -52,6 +52,10 @@ class Reflection:
 
                 data = self._extract_json(response)
 
+                elapsed = round(time.time() - start_time, 2)
+
+                print(f"\n✓ Reflection completed in {elapsed} sec")
+
                 return ReflectionResult(**data)
 
             except Exception:

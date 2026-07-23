@@ -1,3 +1,4 @@
+from pathlib import Path
 import time
 
 from fastapi import APIRouter, HTTPException
@@ -38,10 +39,10 @@ def run_agent(payload: AgentRequest):
             status="Success",
             execution_time=f"{execution_time} sec",
             generated_files={
-                "docx": result.docx_path,
-                "pdf": result.pdf_path,
-                "txt": result.txt_path,
-                "md": result.md_path,
+                "docx": Path(result.docx_path).name,
+                "pdf": Path(result.pdf_path).name,
+                "txt": Path(result.txt_path).name,
+                "md": Path(result.md_path).name,
             },
         )
 
