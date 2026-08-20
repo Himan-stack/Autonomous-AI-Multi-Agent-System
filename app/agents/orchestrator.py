@@ -20,21 +20,35 @@ class Orchestrator:
         self.reflection = Reflection()
         self.document_tool = DocumentTool()
 
-    def run(self, user_request: str) -> OrchestrationResult:
+    def run(self, user_request: str, on_progress=None) -> OrchestrationResult:
+        """
+        on_progress: optional callable(stage: str, status: str, message: str) -> None
+        Called at real stage start/completion boundaries. Purely additive —
+        when omitted, behavior is byte-for-byte identical to before.
+        """
+
+        def _emit(stage, status, message):
+            if on_progress:
+                on_progress(stage, status, message)
 
         print("\n========== ANALYZING REQUEST ==========")
+        _emit("analyzer", "running", "Analyzing requirements...")
 
         analysis = self.analyzer.analyze(user_request)
 
         print("✓ Analysis completed")
+        _emit("analyzer", "completed", "Requirements analyzed successfully.")
 
         print("\n========== PLANNING ==========")
+        _emit("planner", "running", "Planning document structure...")
 
         planning = self.planner.create_plan(analysis)
 
         print("✓ Planning completed")
+        _emit("planner", "completed", "Document plan created.")
 
         print("\n========== EXECUTION ==========")
+        _emit("executor", "running", "Generating document content...")
 
         execution = self.executor.execute(
             analysis=analysis,
@@ -42,14 +56,17 @@ class Orchestrator:
         )
 
         print("✓ Document generated")
+        _emit("executor", "completed", "Document content generated.")
 
         print("\n========== REFLECTION ==========")
+        _emit("reflection", "running", "Reviewing generated document...")
 
         reflection = self.reflection.review(
             execution.generated_content
         )
 
         print("✓ Reflection completed")
+        _emit("reflection", "completed", "Document review completed.")
 
         final_document = (
             reflection.improved_content

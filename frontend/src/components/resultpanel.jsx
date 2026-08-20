@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { CheckCircle2, ListOrdered, Lightbulb } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import FileDownloads from './FileDownloads'
+import FileDownloads from "./filedownloads";
 
 export default function ResultPanel() {
   const { result } = useApp()

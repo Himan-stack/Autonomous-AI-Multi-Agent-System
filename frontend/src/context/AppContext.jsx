@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { runAgent, getBaseURL } from '../services/api'
+import { runAgentStream, getBaseURL } from '../services/api'
 import { STAGES } from '../lib/utils'
 import { toast } from 'sonner'
 
@@ -40,7 +40,6 @@ export function AppProvider({ children }) {
   const [result, setResult] = useState(null)
   const [elapsed, setElapsed] = useState(0)
   const timerRef = useRef(null)
-  const stageTimerRef = useRef(null)
 
   useEffect(() => saveChats(chats), [chats])
 
@@ -107,38 +106,6 @@ export function AppProvider({ children }) {
     toast.success('All chats cleared')
   }, [resetRunState])
 
-  // Fake staged progress while backend runs (backend is synchronous)
-  const startStagedProgress = useCallback(() => {
-    const seq = STAGES.map((s) => s.key)
-    let i = 0
-    setStageStatus((prev) => ({ ...prev, [seq[0]]: 'running' }))
-    pushLog(`◇ ${STAGES[0].label} started — ${STAGES[0].hint}`, 'stage')
-
-    stageTimerRef.current = setInterval(() => {
-      i += 1
-      if (i >= seq.length) return
-      setStageStatus((prev) => ({
-        ...prev,
-        [seq[i - 1]]: 'running-done',
-        [seq[i]]: 'running',
-      }))
-      pushLog(`✓ ${STAGES[i - 1].label} complete`, 'ok')
-      pushLog(`◇ ${STAGES[i].label} started — ${STAGES[i].hint}`, 'stage')
-    }, 2600)
-  }, [pushLog])
-
-  const stopStagedProgress = useCallback((success) => {
-    if (stageTimerRef.current) {
-      clearInterval(stageTimerRef.current)
-      stageTimerRef.current = null
-    }
-    setStageStatus(
-      Object.fromEntries(
-        STAGES.map((s) => [s.key, success ? 'done' : 'error'])
-      )
-    )
-  }, [])
-
   const submit = useCallback(async () => {
     const trimmed = prompt.trim()
     if (trimmed.length < 10) {
@@ -152,13 +119,39 @@ export function AppProvider({ children }) {
       setElapsed((performance.now() - startedAt) / 1000)
     }, 100)
 
-    pushLog(`⚡ Dispatching request to ${getBaseURL()}/agent`, 'system')
+    pushLog(`⚡ Dispatching request to ${getBaseURL()}/agent/stream`, 'system')
     pushLog(`payload → { request: "${trimmed.slice(0, 60)}${trimmed.length > 60 ? '…' : ''}" }`, 'system')
-    startStagedProgress()
 
     try {
-      const data = await runAgent(trimmed)
-      stopStagedProgress(true)
+      let finalData = null
+      let streamError = null
+
+      // Real backend progress only: each stageStatus update below is
+      // driven directly by an actual SSE event from the running
+      // Analyzer/Planner/Executor/Reflection pipeline — no timers,
+      // no simulated delays.
+      await runAgentStream(trimmed, {
+        onStatus: ({ stage, status, message }) => {
+          if (status === 'running') {
+            setStageStatus((prev) => ({ ...prev, [stage]: 'running' }))
+            pushLog(`◇ ${stage} started — ${message}`, 'stage')
+          } else if (status === 'completed') {
+            setStageStatus((prev) => ({ ...prev, [stage]: 'done' }))
+            pushLog(`✓ ${stage} complete — ${message}`, 'ok')
+          }
+        },
+        onComplete: (result) => {
+          finalData = result
+        },
+        onError: (message) => {
+          streamError = message
+        },
+      })
+
+      if (streamError) throw new Error(streamError)
+      if (!finalData) throw new Error('Stream ended without a result')
+
+      const data = finalData
       setResult(data)
       pushLog(`✓ All 4 agents finished · ${data.execution_time}`, 'ok')
       pushLog(`▸ Document type: ${data.document_type}`, 'info')
@@ -186,11 +179,18 @@ export function AppProvider({ children }) {
       setActiveId(id)
       toast.success('Agent workflow complete')
     } catch (err) {
-      stopStagedProgress(false)
+      // Mark any stage that never reported completion as errored,
+      // while preserving the real 'done' status of stages that
+      // genuinely finished before the failure.
+      setStageStatus((prev) =>
+        Object.fromEntries(
+          STAGES.map((s) => [s.key, prev[s.key] === 'done' ? 'done' : 'error'])
+        )
+      )
       const msg =
         err?.response?.data?.detail ||
         err?.message ||
-        'Unknown error while contacting /agent'
+        'Unknown error while contacting /agent/stream'
       pushLog(`✗ ${msg}`, 'error')
       toast.error(msg)
     } finally {
@@ -200,7 +200,7 @@ export function AppProvider({ children }) {
       }
       setIsRunning(false)
     }
-  }, [prompt, activeId, pushLog, resetRunState, startStagedProgress, stopStagedProgress])
+  }, [prompt, activeId, pushLog, resetRunState])
 
   const value = {
     chats,
