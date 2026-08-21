@@ -6,6 +6,7 @@ import Workspace from './components/workspace'
 import ExecutionTimeline from './components/executiontimeline'
 import MetricsCards from './components/metricscards'
 import LogsPanel from './components/logspanel'
+import DocumentStream from './components/documentstream'
 import ResultPanel from './components/resultpanel'
 import SettingsModal from './components/settingsmodal'
 import { useApp } from './context/AppContext'
@@ -35,6 +36,7 @@ export default function App() {
           <ExecutionTimeline />
           <MetricsCards />
           <LogsPanel />
+          <DocumentStream />
           <ResultPanel />
 
           <footer className="max-w-5xl mx-auto w-full px-5 lg:px-8 pt-4">

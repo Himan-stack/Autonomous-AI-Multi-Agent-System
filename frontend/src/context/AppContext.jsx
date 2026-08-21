@@ -37,6 +37,7 @@ export function AppProvider({ children }) {
     () => Object.fromEntries(STAGES.map((s) => [s.key, 'idle']))
   )
   const [logs, setLogs] = useState([])
+  const [documentText, setDocumentText] = useState('')
   const [result, setResult] = useState(null)
   const [elapsed, setElapsed] = useState(0)
   const timerRef = useRef(null)
@@ -63,6 +64,7 @@ export function AppProvider({ children }) {
   const resetRunState = useCallback(() => {
     setStageStatus(Object.fromEntries(STAGES.map((s) => [s.key, 'idle'])))
     setLogs([])
+    setDocumentText('')
     setResult(null)
     setElapsed(0)
   }, [])
@@ -140,6 +142,11 @@ export function AppProvider({ children }) {
             pushLog(`✓ ${stage} complete — ${message}`, 'ok')
           }
         },
+        onContent: ({ text }) => {
+          // Progressive real document text, chunk by chunk, as it
+          // arrives over SSE — not simulated, not delayed client-side.
+          setDocumentText((prev) => (prev ? `${prev} ${text}` : text))
+        },
         onComplete: (result) => {
           finalData = result
         },
@@ -211,6 +218,7 @@ export function AppProvider({ children }) {
     isRunning,
     stageStatus,
     logs,
+    documentText,
     result,
     elapsed,
     submit,

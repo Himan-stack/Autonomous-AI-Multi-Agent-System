@@ -63,6 +63,25 @@ def _sse(event: str, data: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
 
+def _chunk_text(text: str, size: int = 240):
+    """
+    Split already-generated text into sensible chunks for progressive
+    SSE rendering. Not a delay/simulation mechanism — splits on word
+    boundaries so each chunk is a clean, independently JSON-safe piece
+    of the real final_document string produced by the orchestrator.
+    """
+    words = text.split(" ")
+    chunk, chunk_len = [], 0
+    for word in words:
+        chunk.append(word)
+        chunk_len += len(word) + 1
+        if chunk_len >= size:
+            yield " ".join(chunk)
+            chunk, chunk_len = [], 0
+    if chunk:
+        yield " ".join(chunk)
+
+
 async def _agent_stream_generator(payload: AgentRequest):
     """
     Runs the REAL (unmodified) orchestrator pipeline on a background thread
@@ -103,6 +122,12 @@ async def _agent_stream_generator(payload: AgentRequest):
             result = item[1]
             execution_time = round(time.time() - start_time, 2)
 
+            # Progressive rendering of the actual generated document
+            # (result.final_document, already produced by the pipeline)
+            # instead of only showing it once inside the final payload.
+            for index, piece in enumerate(_chunk_text(result.final_document)):
+                yield _sse("content", {"index": index, "text": piece})
+
             final_payload = {
                 "request": payload.request,
                 "document_type": result.analysis.document_type,
@@ -135,9 +160,10 @@ def run_agent_stream(payload: AgentRequest):
     """
     Streaming counterpart of /agent. Emits real-time SSE progress events
     (analyzer -> planner -> executor -> reflection) as the actual
-    orchestrator pipeline executes, then a final `complete` event with
-    the same result shape as the existing /agent response, or an
-    `error` event if the pipeline raises.
+    orchestrator pipeline executes, then progressive `content` events
+    carrying chunks of the real generated document text, then a final
+    `complete` event with the same result shape as the existing /agent
+    response, or an `error` event if the pipeline raises.
 
     /agent remains fully intact and unaffected by this route.
     """

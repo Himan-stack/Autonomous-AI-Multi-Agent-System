@@ -1,7 +1,14 @@
 import axios from 'axios'
 
-const baseURL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+// Production-safe API routing:
+// - If VITE_API_BASE_URL is explicitly set (e.g. local dev via
+//   frontend/.env.development -> http://localhost:8000), use it.
+// - Otherwise default to '' (same-origin): requests go to
+//   /agent and /agent/stream on whatever origin served the page.
+//   In production that origin is the single public HTTPS host
+//   (via Caddy), which reverse-proxies /agent* to the backend
+//   container — so the browser never talks to port 8000 directly.
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? ''
 
 export const api = axios.create({
   baseURL,
@@ -33,6 +40,8 @@ export async function healthCheck() {
  *   body: { request: string }  (min 10, max 5000 chars)
  *   events:
  *     event: status   data: { stage, status: 'running'|'completed', message }
+ *     event: content  data: { index: number, text: string }  (chunk of the
+ *                            real generated document, in order)
  *     event: complete data: <same shape as the existing /agent response>
  *     event: error    data: { message }
  *
@@ -42,12 +51,13 @@ export async function healthCheck() {
  *
  * @param {string} prompt
  * @param {{ onStatus?: (evt: {stage:string,status:string,message:string}) => void,
+ *           onContent?: (evt: {index:number,text:string}) => void,
  *           onComplete?: (result: object) => void,
  *           onError?: (message: string) => void,
  *           signal?: AbortSignal }} handlers
  */
 export async function runAgentStream(prompt, handlers = {}) {
-  const { onStatus, onComplete, onError, signal } = handlers
+  const { onStatus, onContent, onComplete, onError, signal } = handlers
 
   const res = await fetch(`${baseURL}/agent/stream`, {
     method: 'POST',
@@ -97,6 +107,8 @@ export async function runAgentStream(prompt, handlers = {}) {
 
     if (eventType === 'status') {
       onStatus?.(data)
+    } else if (eventType === 'content') {
+      onContent?.(data)
     } else if (eventType === 'complete') {
       onComplete?.(data)
     } else if (eventType === 'error') {

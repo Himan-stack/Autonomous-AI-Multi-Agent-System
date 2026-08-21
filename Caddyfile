@@ -1,0 +1,19 @@
+3-108-215-197.sslip.io {
+	encode gzip
+
+	# Backend: /agent (JSON), /agent/stream (SSE), /download (file fetch).
+	handle /agent* {
+		reverse_proxy backend:8000 {
+			# SSE needs the response streamed through, not buffered.
+			flush_interval -1
+		}
+	}
+	handle /download* {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else -> the built React app served by nginx.
+	handle {
+		reverse_proxy frontend:80
+	}
+}

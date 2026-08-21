@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,13 +12,22 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Comma-separated list of allowed origins, e.g.:
+#   ALLOWED_ORIGINS=https://3-108-215-197.sslip.io,http://localhost:5173
+# Defaults to the local dev origins so nothing breaks locally when the
+# env var is unset. In production, Caddy serves frontend + backend from
+# the same HTTPS origin, so most real requests are same-origin anyway;
+# this only matters if something calls the API cross-origin directly.
+_default_origins = "http://localhost:5173,http://localhost:5174"
+allowed_origins = [
+    o.strip()
+    for o in os.getenv("ALLOWED_ORIGINS", _default_origins).split(",")
+    if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://3.108.215.197:5174",
-        "http://localhost:5173",
-        "http://localhost:5174",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
