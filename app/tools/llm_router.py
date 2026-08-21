@@ -7,13 +7,13 @@ class LLMRouter:
     Central router for all LLM requests.
 
     Strategy:
-    1. Try Gemini
-    2. If Gemini fails, automatically use Groq
+    1. Try Groq first
+    2. If Groq fails, automatically use Gemini
     """
 
     def __init__(self):
-        self.gemini = LLMService()
         self.groq = GroqService()
+        self.gemini = LLMService()
 
     def generate(self, prompt: str) -> str:
 
@@ -23,23 +23,43 @@ class LLMRouter:
         if not prompt.strip():
             raise ValueError("Prompt cannot be empty.")
 
+        # ---------------------------------------------------------
+        # PRIMARY: GROQ
+        # ---------------------------------------------------------
         try:
+            print("\n[Router] Using Groq...\n")
 
-            print("\n[Router] Using Gemini...\n")
+            result = self.groq.generate(prompt)
 
-            return self.gemini.generate(prompt)
+            print("[Router] Groq succeeded.\n")
+
+            return result
+
+        except Exception as groq_error:
+
+            print("\n[Router] Groq failed:")
+            print(repr(groq_error))
+            print("\n[Router] Switching to Gemini...\n")
+
+        # ---------------------------------------------------------
+        # FALLBACK: GEMINI
+        # ---------------------------------------------------------
+        try:
+            print("[Router] Using Gemini...\n")
+
+            result = self.gemini.generate(prompt)
+
+            print("[Router] Gemini succeeded.\n")
+
+            return result
 
         except Exception as gemini_error:
 
-            print(f"\n[Router] Gemini failed:\n{gemini_error}\n")
-            print("[Router] Switching to Groq...\n")
+            print("\n[Router] Gemini failed:")
+            print(repr(gemini_error))
 
-            try:
-
-                return self.groq.generate(prompt)
-
-            except Exception as groq_error:
-
-                raise RuntimeError(
-                    "Both LLM providers are currently unavailable."
-                ) from groq_error
+            raise RuntimeError(
+                "All LLM providers failed. "
+                f"Groq error: {groq_error} | "
+                f"Gemini error: {gemini_error}"
+            ) from gemini_error

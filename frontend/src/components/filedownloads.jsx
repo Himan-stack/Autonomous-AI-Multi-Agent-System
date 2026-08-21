@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Copy, Check, FileDown, FolderOpen } from 'lucide-react'
 import { toast } from 'sonner'
 import { fileBadge, shortenPath } from '../lib/utils'
+import { getBaseURL } from '../services/api'
 
 export default function FileDownloads({ files }) {
   const [copied, setCopied] = useState(null)
@@ -119,7 +120,7 @@ export default function FileDownloads({ files }) {
                     )}
                   </button>
                   <a
-                    href={`http://localhost:8000/download/${path}`}
+                    href={`${getBaseURL()}/download/${path}`}
                     download 
                     target="_blank"
                     rel="noopener noreferrer"
